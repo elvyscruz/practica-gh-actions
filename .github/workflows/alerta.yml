@@ -1,4 +1,4 @@
-name: Notificar push a main
+name: Notificar push con cowsay
 
 on:
   push:
@@ -10,13 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Obtener información del commit
+      - name: Instalar cowsay
+        run: sudo apt-get update && sudo apt-get install -y cowsay
+
+      - name: Enviar notificación con cowsay
         run: |
           AUTHOR_NAME="${{ github.actor }}"
           COMMIT_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+          MENSAJE="🛠️ El usuario $AUTHOR_NAME hizo push a main. Ver commit: $COMMIT_URL"
+
+          cowsay "$MENSAJE" > mensaje.txt
 
           curl -X POST ntfy.sh/devops-itla \
-            -H "Title: Push a main" \
+            -H "Title: Push con cowsay" \
             -H "Priority: high" \
-            -d "🛠️ El usuario $AUTHOR_NAME hizo push a main. Ver commit: $COMMIT_URL"
+            -d "$(cat mensaje.txt)"
 

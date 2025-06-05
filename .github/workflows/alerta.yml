@@ -1,0 +1,22 @@
+name: Notificar push a main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notificar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obtener información del commit
+        run: |
+          AUTHOR_NAME="${{ github.actor }}"
+          COMMIT_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+
+          curl -X POST ntfy.sh/devops-itla \
+            -H "Title: Push a main" \
+            -H "Priority: high" \
+            -d "🛠️ El usuario $AUTHOR_NAME hizo push a main. Ver commit: $COMMIT_URL"
+
